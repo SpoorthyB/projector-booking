@@ -48,7 +48,7 @@ public class BookingController {
 		bookingService.createBooking(obj);
 	}
 	
-	@RequestMapping(method=RequestMethod.POST, value="/booking/team/{team}")
+	@RequestMapping(method=RequestMethod.POST, value="/booking/{team}")
 	public ResponseEntity<?> createBooking(@PathVariable String team, 
 			@RequestParam String date,
 			@RequestParam /*@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)*/ String start,
@@ -62,7 +62,7 @@ public class BookingController {
 		else{
 			RequestQueue rq = new RequestQueue(date, start, end, team);
 			rqService.createRequest(rq);
-			return new ResponseEntity<RequestQueue>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>("No projectors found currently. Your request is queued.",HttpStatus.ACCEPTED);
 		}
 		return  new ResponseEntity<Booking>(record, HttpStatus.OK);
 	}
@@ -70,6 +70,11 @@ public class BookingController {
 	@RequestMapping(method=RequestMethod.DELETE, value="/booking/{id}")
 	public void cancelBooking(@PathVariable String id){
 		bookingService.cancelBooking(bookingService.getBookingById(id));
+	}
+	
+	@RequestMapping(method=RequestMethod.PUT, value="/booking")
+	public void updateBooking(@RequestBody Booking booking){
+		bookingService.updateBooking(booking);
 	}
 	
 	

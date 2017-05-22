@@ -77,7 +77,9 @@ public class BookingService {
 	
 	public void updateBooking(Booking booking){
 		Booking updateBooking = getBooking(booking.getDate(),booking.getStart(),booking.getEnd());
-		
+		if (updateBooking == null) {
+			throw new ResourceNotFoundException();
+		}
 		bookingrepo.save(booking);
 	}
 	

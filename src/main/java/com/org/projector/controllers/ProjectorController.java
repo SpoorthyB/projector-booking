@@ -43,7 +43,7 @@ public class ProjectorController {
 	}
 	
 	@RequestMapping(method=RequestMethod.DELETE, value="/projectors/{id}")
-	public void updateProjector(@PathVariable String id){
+	public void deleteProjector(@PathVariable String id){
 		projectorService.deleteProjector(id);
 	}
 	
