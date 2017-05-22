@@ -5,9 +5,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +28,8 @@ public class BookingController {
 	
 	@Autowired
 	private BookingService bookingService;
+	@Autowired
+	private RequestQueueService rqService;
 	
 	@RequestMapping(method=RequestMethod.GET, value="/booking/{date}")
 	public List<Booking> createBooking(@PathVariable("date") 
@@ -33,8 +38,8 @@ public class BookingController {
 		return bookingService.getBookingbyDate(date);
 	}
 	
-	@RequestMapping(method=RequestMethod.GET, value="/booking/{team}")
-	public List<Booking> getBookings(@PathVariable String team){
+	@RequestMapping(method=RequestMethod.GET, value="/booking/team/{teamId}")
+	public List<Booking> getBookings(@PathVariable("teamId") String team){
 		return bookingService.findBookingByTeam(team);
 	}
 	
@@ -44,7 +49,7 @@ public class BookingController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/booking/team/{team}")
-	public Booking createBooking(@PathVariable String team, 
+	public ResponseEntity<?> createBooking(@PathVariable String team, 
 			@RequestParam String date,
 			@RequestParam /*@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)*/ String start,
 			@RequestParam String end,
@@ -54,11 +59,16 @@ public class BookingController {
 		if(record!=null){
 			bookingService.createBooking(record);
 		}
-		return record;
+		else{
+			RequestQueue rq = new RequestQueue(date, start, end, team);
+			rqService.createRequest(rq);
+			return new ResponseEntity<RequestQueue>(HttpStatus.NO_CONTENT);
+		}
+		return  new ResponseEntity<Booking>(record, HttpStatus.OK);
 	}
 	
 	@RequestMapping(method=RequestMethod.DELETE, value="/booking/{id}")
-	public void cancelBooking(String id){
+	public void cancelBooking(@PathVariable String id){
 		bookingService.cancelBooking(bookingService.getBookingById(id));
 	}
 	

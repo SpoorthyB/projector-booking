@@ -41,6 +41,15 @@ public class Booking {
 		this.projector = projector;
 		this.team = team;
 	}
+	public Booking(String id,String date, String start, String end, String projector, String team) {
+		super();
+		this.id = id;
+		this.date = date;
+		this.start = start;
+		this.end = end;
+		this.projector = projector;
+		this.team = team;
+	}
 	
 	/* Getters and Setters*/
 	public String getDate() {

@@ -1,6 +1,5 @@
 package com.org.projector.beans;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -17,18 +16,18 @@ public class RequestQueue {
 	
 	@Id
     private String id;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
-	private LocalDate date;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ssZ")
-	private LocalDateTime start;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ssZ")
-	private LocalDateTime end;
+	/*@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")*/
+	private String date;
+	/*@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ssZ")*/
+	private String start;
+	/*@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ssZ")*/
+	private String end;
 	private String team;
 	private String created;
 	
 	public RequestQueue(){}
 	
-	public RequestQueue(LocalDate date, LocalDateTime start, LocalDateTime end, String team) {
+	public RequestQueue(String date, String start, String end, String team) {
 		super();
 		this.id = new ObjectId().toString();
 		this.date = date;
@@ -47,27 +46,27 @@ public class RequestQueue {
 		this.id = id;
 	}
 
-	public LocalDate getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
-	public LocalDateTime getStart() {
+	public String getStart() {
 		return start;
 	}
 
-	public void setStart(LocalDateTime start) {
+	public void setStart(String start) {
 		this.start = start;
 	}
 
-	public LocalDateTime getEnd() {
+	public String getEnd() {
 		return end;
 	}
 
-	public void setEnd(LocalDateTime end) {
+	public void setEnd(String end) {
 		this.end = end;
 	}
 
