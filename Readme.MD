@@ -7,10 +7,14 @@ REST APIs for Projector Resource
 -------------------------------------
 
 GET all projectors:  					/projectors
+
 GET single projecor by ID:  			/projectors/{id}
+
 POST single projector object:			/projectors
+
   -- pass the projector object 
      as request body
+
 DELETE a projector:						/projectors/{id}
 
 REST APIs for Projector Booking
