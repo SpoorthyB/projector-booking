@@ -19,7 +19,7 @@ public interface BookingRepository extends CrudRepository<Booking,Long>{
 	//find all bookings for a projector
 	List<Booking> findBookingByProjector(String projector);
 	
-	@Query("{'date':?0,$nor[{'start':{$gte : ?2}},{'end':{$lte : ?1}}]")
+	@Query("{'date':?0,{$and[{'start':{$lte : ?2}},{'end':{$gte : ?1}}]}")
 	List<Booking> FindOverlappingBookings(LocalDate date, LocalDateTime start,LocalDateTime end,Sort sort);
 	
 	//find for a given date, start, end times
