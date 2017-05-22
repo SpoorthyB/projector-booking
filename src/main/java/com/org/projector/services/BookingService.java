@@ -44,6 +44,14 @@ public class BookingService {
 		return bookingObj;
 	}
 	
+	public List<Booking> getBookingbyDate(LocalDate date){
+		List<Booking> bookingObj = bookingrepo.findBookingByDate(date);
+		if(bookingObj == null){
+			throw new ResourceNotFoundException();
+		}
+		return bookingObj;
+	}
+	
 	public Booking getBookingById(Long id){
 		return bookingrepo.findOne(id);
 	}
