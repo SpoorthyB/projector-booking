@@ -16,10 +16,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Booking {
 	
 	@Id
-    private long id;
-	private LocalDate date;
-	private LocalDateTime start;
-	private LocalDateTime end;	
+    private String id;
+	private String date;
+	private String start;
+	private String end;	
 	private String projector;
 	@Indexed
 	private String team;
@@ -33,7 +33,7 @@ public class Booking {
 	 * @param projector
 	 * @param team
 	 */
-	public Booking(LocalDate date, LocalDateTime start, LocalDateTime end, String projector, String team) {
+	public Booking(String date, String start, String end, String projector, String team) {
 		super();
 		this.date = date;
 		this.start = start;
@@ -43,22 +43,22 @@ public class Booking {
 	}
 	
 	/* Getters and Setters*/
-	public LocalDate getDate() {
+	public String getDate() {
 		return date;
 	}
-	public void setDate(LocalDate date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
-	public LocalDateTime getStart() {
+	public String getStart() {
 		return start;
 	}
-	public void setStart(LocalDateTime start) {
+	public void setStart(String start) {
 		this.start = start;
 	}
-	public LocalDateTime getEnd() {
+	public String getEnd() {
 		return end;
 	}
-	public void setEnd(LocalDateTime end) {
+	public void setEnd(String end) {
 		this.end = end;
 	}
 	public String getProjector() {

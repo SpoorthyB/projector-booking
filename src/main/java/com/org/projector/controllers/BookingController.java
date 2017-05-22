@@ -28,9 +28,14 @@ public class BookingController {
 	
 	@RequestMapping(method=RequestMethod.GET, value="/booking/{date}")
 	public List<Booking> createBooking(@PathVariable("date") 
-    		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, HttpServletResponse response) {
+    		String date, HttpServletResponse response) {
 		
 		return bookingService.getBookingbyDate(date);
+	}
+	
+	@RequestMapping(method=RequestMethod.GET, value="/booking/{team}")
+	public List<Booking> getBookings(@PathVariable String team){
+		return bookingService.findBookingByTeam(team);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/projectorbooking")
@@ -40,12 +45,21 @@ public class BookingController {
 	
 	@RequestMapping(method=RequestMethod.POST, value="/booking/team/{team}")
 	public Booking createBooking(@PathVariable String team, 
-			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+			@RequestParam String date,
+			@RequestParam /*@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)*/ String start,
+			@RequestParam String end,
 			HttpServletResponse response) {
 		
-		return bookingService.createBooking(date,start,end,team);
+		Booking record = bookingService.createBooking(date,start,end,team);
+		if(record!=null){
+			bookingService.createBooking(record);
+		}
+		return record;
+	}
+	
+	@RequestMapping(method=RequestMethod.DELETE, value="/booking/{id}")
+	public void cancelBooking(String id){
+		bookingService.cancelBooking(bookingService.getBookingById(id));
 	}
 	
 	

@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 
-public interface BookingRepository extends CrudRepository<Booking,Long>{
+public interface BookingRepository extends CrudRepository<Booking,String>{
 	
 	//find all bookings for a team
 	List<Booking> findBookingByTeam(String team);
@@ -19,14 +19,14 @@ public interface BookingRepository extends CrudRepository<Booking,Long>{
 	//find all bookings for a projector
 	List<Booking> findBookingByProjector(String projector);
 	
-	@Query("{'date':?0,{$and[{'start':{$lte : ?2}},{'end':{$gte : ?1}}]}")
-	List<Booking> FindOverlappingBookings(LocalDate date, LocalDateTime start,LocalDateTime end,Sort sort);
+	//@Query("{'date':?0,{$or[{$and[{'start':{$gte : ?1}},{'end':{$lte : ?1}}]}, {$and[{'start':{$gte : ?2}},{'end':{$lte : ?2}}]}]}")
+	//List<Booking> FindOverlappingBookings(LocalDate date, LocalDateTime start,LocalDateTime end,Sort sort);
 	
 	//find for a given date, start, end times
-	Booking findBookingByDateAndStartAndEnd(LocalDate date, LocalDateTime start,LocalDateTime end);
+	Booking findBookingByDateAndStartAndEnd(String date, String start,String end);
 	
 	//find by date
-	List<Booking> findBookingByDate(LocalDate date);
+	List<Booking> findBookingByDate(String date);
 	
 
 }

@@ -1,6 +1,8 @@
 package com.org.projector.services;
 
 import java.time.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ public class BookingService {
 	private BookingRepository bookingrepo;
 	@Autowired
 	SchedulerService schedulerService;
+	@Autowired
+	SchedulerUtility util;
 	
 	public List<Booking> findBookingByTeam(String team){
 		return (List<Booking>) bookingrepo.findBookingByTeam(team);
@@ -28,15 +32,30 @@ public class BookingService {
 		return (List<Booking>) bookingrepo.findBookingByProjector(projector);
 	}
 	
-	public List<Booking> getConflictingBookings(LocalDate date, LocalDateTime starttime, LocalDateTime endtime){
-		return (List<Booking>)bookingrepo.FindOverlappingBookings(date, starttime, endtime,new Sort(Sort.Direction.DESC,"id"));
+	public List<Booking> getConflictingBookings(String date, String starttime, String endtime){
+		List<Booking> bList = (List<Booking>)bookingrepo.findBookingByDate(date)/*,new Sort(Sort.Direction.DESC,"id")*/;
+		List<Booking> overlaps = new ArrayList<Booking>();
+		Date indate = util.getDateFromString(date);
+		Date instart = util.getTimeFromString(starttime);
+		Date inend = util.getTimeFromString(endtime);
+		for(Booking booking: bList){
+			Date day = util.getDateFromString(booking.getDate());
+			Date start = util.getTimeFromString(booking.getStart());
+			Date end = util.getTimeFromString(booking.getEnd());
+			if(indate.equals(day)){
+				if(!start.after(instart)&&!end.before(instart)||!start.after(inend)&&!end.before(inend)){
+					overlaps.add(booking);
+				}
+			}
+		}
+		return overlaps;		
 	}
 	
 	public void createBooking(Booking booking){
 		bookingrepo.save(booking);
 	}
 	
-	public Booking getBooking(LocalDate date, LocalDateTime starttime, LocalDateTime endtime){
+	public Booking getBooking(String date, String starttime, String endtime){
 		Booking bookingObj = bookingrepo.findBookingByDateAndStartAndEnd(date, starttime, endtime);
 		if(bookingObj == null){
 			throw new ResourceNotFoundException();
@@ -44,7 +63,7 @@ public class BookingService {
 		return bookingObj;
 	}
 	
-	public List<Booking> getBookingbyDate(LocalDate date){
+	public List<Booking> getBookingbyDate(String date){
 		List<Booking> bookingObj = bookingrepo.findBookingByDate(date);
 		if(bookingObj == null){
 			throw new ResourceNotFoundException();
@@ -52,25 +71,21 @@ public class BookingService {
 		return bookingObj;
 	}
 	
-	public Booking getBookingById(Long id){
+	public Booking getBookingById(String id){
 		return bookingrepo.findOne(id);
 	}
 	
 	public void updateBooking(Booking booking){
 		Booking updateBooking = getBooking(booking.getDate(),booking.getStart(),booking.getEnd());
-		updateBooking.setDate(booking.getDate());
-		updateBooking.setStart(booking.getStart());
-		updateBooking.setEnd(booking.getEnd());
-		updateBooking.setTeam(booking.getTeam());
-		updateBooking.setProjector(booking.getProjector());
-		bookingrepo.save(updateBooking);
+		
+		bookingrepo.save(booking);
 	}
 	
 	public void cancelBooking(Booking booking){
 		bookingrepo.delete(booking);
 	}
 
-	public Booking createBooking(LocalDate date, LocalDateTime start, LocalDateTime end, String team) {
+	public Booking createBooking(String date, String start, String end, String team) {
 		
 		List<String> availableProjectors = getAvailableProjectors(date, start, end);
 		if(availableProjectors.size() ==0){
@@ -82,15 +97,15 @@ public class BookingService {
 		
 	}
 
-	private List<String> getAvailableProjectors(LocalDate date, LocalDateTime start, LocalDateTime end) {
+	private List<String> getAvailableProjectors(String date, String start, String end) {
 		List<String> allProjectors = schedulerService.getAllProjectorIds();
 		List<Booking> dateBookings = getConflictingBookings(date, start, end);
 		List<String> bookedProjectors = schedulerService.getProjectorIdsFromBookings(dateBookings);
 		
 		//return all projectors if overlapping bookings not found
-		if(bookedProjectors == null)return allProjectors;
+		if(bookedProjectors == null||bookedProjectors.size() == 0)return allProjectors;
 		
-		SchedulerUtility util = new SchedulerUtility();
+		/*SchedulerUtility util = new SchedulerUtility();*/
 		List<String> availableProjectors = util.findDifference(allProjectors, bookedProjectors);
 		return availableProjectors;
 	}

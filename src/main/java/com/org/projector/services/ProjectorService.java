@@ -24,7 +24,7 @@ public class ProjectorService {
 	}
 	
 	public List<Projector> getAll(){
-		List<Projector> projectorList =  (List<Projector>) repository.findAllByOrderByIdAsc();				
+		List<Projector> projectorList =  (List<Projector>) repository.findAllByOrderByIdAsc();
 		return projectorList;
 	}	
 	
